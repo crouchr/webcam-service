@@ -31,7 +31,7 @@ def status():
     app_name = request.args.get('app_name')
 
     answer['status'] = 'OK'
-    answer['version'] = get_version.get_version()
+    answer['version'] = version.get_version()
 
     print('status() : app_name=' + app_name.__str__() + ', version=' + answer['version'])
     response = jsonify(answer)
@@ -69,11 +69,15 @@ def get_image_api():
 
         print('get_image_api() : app_name=' + app_name.__str__() + ', output_filename=' + output_filename.__str__())
 
-        webcam_capture.take_picture(output_filename)
+        if output_filename is None:
+            output_filename=webcam_capture.create_media_filename(media_type='image')
+
+        webcam_capture.take_picture('images/' + output_filename)
 
         # Create response
         answer['status'] = 'OK'
-
+        answer['output_filename'] = output_filename
+        answer['filesize'] = 0  # FIXME
 
         response = jsonify(answer)
 
@@ -90,7 +94,7 @@ def get_image_api():
 
 if __name__ == '__main__':
     os.environ['PYTHONUNBUFFERED'] = "1"            # does this help with log buffering ?
-    version = get_version() .get_version()          # container version
+    version = get_version.get_version()           # container version
 
     print('webcam-service started, version=' + version)
 

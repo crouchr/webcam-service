@@ -89,10 +89,11 @@ def take_video(video_filename, video_length_secs):
 
 
 if __name__ == '__main__' :
-    media_filename = create_media_filename('image')
+    # media_filename = create_media_filename('image')
+    media_filename = 'junk.png'
     flag = take_picture(media_filename)
 
-    media_filename = create_media_filename('video')
-
-    media_filename = 'sky.avi'
-    flag = take_video(media_filename, video_length_secs=15)
+    # media_filename = create_media_filename('video')
+    #
+    # media_filename = 'sky.avi'
+    # flag = take_video(media_filename, video_length_secs=15)

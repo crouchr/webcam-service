@@ -9,7 +9,7 @@ ENV PYTHONUNBUFFERED=1
 
 # install opencv
 RUN apt -y update
-RUN apt -y install python3-opencv
+RUN apt -y install python3-opencv joe
 
 # Install Python dependencies
 RUN pip3 install pipenv
@@ -21,6 +21,8 @@ RUN mkdir /app
 COPY app/*.py /app/
 WORKDIR /app
 
+EXPOSE 9503
+
 # run Python unbuffered so the logs are flushed
-#CMD ["python3", "-u", "webcam-service.py"]
-CMD ["tail", "-f", "/dev/null"]
+CMD ["python3", "-u", "webcam_service.py"]
+#CMD ["tail", "-f", "/dev/null"]

@@ -5,7 +5,8 @@ version: '3'
 services:
   webcam-service:
     container_name: webcam-service
-    image: registry:5000/webcam-service:latest
+    #image: registry:5000/webcam-service:latest
+    image: webcam-service:latest
     logging:
       driver: syslog
     environment:
@@ -15,3 +16,12 @@ services:
       - /dev/video0:/dev/video0
     ports:
       - "9504:9504"
+    volumes:
+      -  "webcamimages:/images:rw"
+      -  "webcamvideos:/videos:rw"
+      -  "temp:/temp:rw"
+volumes:
+  webcamimages:
+  webcamvideos:
+  temp:
+
