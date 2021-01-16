@@ -1,0 +1,17 @@
+# This runs on the Docker Host
+
+version: '3'
+
+services:
+  webcam-service:
+    container_name: webcam-service
+    image: registry:5000/webcam-service:latest
+    logging:
+      driver: syslog
+    environment:
+      STAGE: PRD
+      VERSION: latest
+    devices:
+      - /dev/video0:/dev/video0
+    ports:
+      - "9504:9504"
