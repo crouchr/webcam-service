@@ -31,6 +31,7 @@ def status():
     app_name = request.args.get('app_name')
 
     answer['status'] = 'OK'
+    answer['service_name'] = 'webcam-service'
     answer['version'] = version.get_version()
 
     print('status() : app_name=' + app_name.__str__() + ', version=' + answer['version'])
