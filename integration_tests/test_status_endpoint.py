@@ -10,7 +10,7 @@ def test_status():
     query = {}
     query['app_name'] = 'integration_tests'
 
-    status_code, response_dict = call_rest_api.call_rest_api(integration_definitions.endpoint_base + '/status', query)
+    status_code, response_dict = call_rest_api.call_rest_api(integration_definitions.webcam_service_endpoint_base + '/status', query)
 
     if response_dict is None:
         return None

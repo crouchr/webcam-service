@@ -5,7 +5,6 @@ version: '3'
 services:
   webcam-service:
     container_name: webcam-service
-    #image: registry:5000/webcam-service:latest
     image: webcam-service:latest
     logging:
       driver: syslog

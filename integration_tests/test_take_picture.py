@@ -11,7 +11,7 @@ def test_take_picture():
     query['app_name'] = 'integration_tests'
     query['output_filename'] = 'junk.png'
 
-    status_code, response_dict = call_rest_api.call_rest_api(integration_definitions.endpoint_base + '/take_picture', query)
+    status_code, response_dict = call_rest_api.call_rest_api(integration_definitions.webcam_service_endpoint_base + '/take_picture', query)
 
     if response_dict is None:
         return None

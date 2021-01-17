@@ -5,7 +5,7 @@ import sys
 
 from flask import Flask, jsonify, request
 
-import get_version
+import get_env
 import definitions
 import webcam_capture
 
@@ -32,7 +32,7 @@ def status():
 
     answer['status'] = 'OK'
     answer['service_name'] = 'webcam-service'
-    answer['version'] = version.get_version()
+    answer['version'] = get_env.get_version()
 
     print('status() : app_name=' + app_name.__str__() + ', version=' + answer['version'])
     response = jsonify(answer)
@@ -71,14 +71,14 @@ def get_image_api():
         print('get_image_api() : app_name=' + app_name.__str__() + ', output_filename=' + output_filename.__str__())
 
         if output_filename is None:
-            output_filename=webcam_capture.create_media_filename(media_type='image')
+            output_filename = webcam_capture.create_media_filename(media_type='image')
 
         webcam_capture.take_picture('images/' + output_filename)
 
         # Create response
         answer['status'] = 'OK'
         answer['output_filename'] = output_filename
-        answer['filesize'] = 0  # FIXME
+        answer['filesize'] = 0      # FIXME
 
         response = jsonify(answer)
 
@@ -94,9 +94,13 @@ def get_image_api():
 
 
 if __name__ == '__main__':
-    os.environ['PYTHONUNBUFFERED'] = "1"            # does this help with log buffering ?
-    version = get_version.get_version()           # container version
+    try:
+        os.environ['PYTHONUNBUFFERED'] = "1"            # does this help with log buffering ?
+        version = get_env.get_version()           # container version
 
-    print('webcam-service started, version=' + version)
+        print('webcam-service started, version=' + version)
 
-    app.run(host='0.0.0.0', port=definitions.listen_port.__str__())
+        app.run(host='0.0.0.0', port=definitions.webcam_service_listen_port.__str__())
+
+    except Exception as e:
+        print(e.__str__)
