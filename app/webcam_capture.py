@@ -54,8 +54,6 @@ def take_picture(image_filename):
     return True
 
 
-
-
 def take_video(video_filename, video_length_secs):
     print('Grabbing ' + video_length_secs.__str__() + ' seconds of video from webcam...')
     cam = cv2.VideoCapture(0)       # /dev/video0

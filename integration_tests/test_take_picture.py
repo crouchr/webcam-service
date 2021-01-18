@@ -11,11 +11,11 @@ def test_take_picture():
     query['app_name'] = 'integration_tests'
     query['output_filename'] = 'junk.png'
 
-    status_code, response_dict = call_rest_api.call_rest_api(integration_definitions.webcam_service_endpoint_base + '/take_picture', query)
+    status_code, response_dict = call_rest_api.call_rest_api(integration_definitions.webcam_service_endpoint_base + '/get_image', query)
 
     if response_dict is None:
-        return None
+        assert False
 
     assert status_code == 200
     assert response_dict['status'] == 'OK'
-    assert 'version' in response_dict
+

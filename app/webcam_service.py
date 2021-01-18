@@ -73,7 +73,9 @@ def get_image_api():
         if output_filename is None:
             output_filename = webcam_capture.create_media_filename(media_type='image')
 
-        webcam_capture.take_picture('images/' + output_filename)
+        images_dir = '/tmp/'
+        #images_dir = '../images/'
+        webcam_capture.take_picture(images_dir + output_filename)
 
         # Create response
         answer['status'] = 'OK'
