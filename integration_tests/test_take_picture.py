@@ -9,7 +9,8 @@ def test_take_picture():
     """
     query = {}
     query['app_name'] = 'integration_tests'
-    query['output_filename'] = 'junk.png'
+    #query['output_filename'] = '/tmp/junk.png'
+    query['output_filename'] = '../images/junk.png'
 
     status_code, response_dict = call_rest_api.call_rest_api(integration_definitions.webcam_service_endpoint_base + '/get_image', query)
 

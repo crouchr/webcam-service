@@ -75,7 +75,7 @@ def get_image_api():
 
         images_dir = '/tmp/'
         #images_dir = '../images/'
-        webcam_capture.take_picture(images_dir + output_filename)
+        webcam_capture.take_picture(output_filename)
 
         # Create response
         answer['status'] = 'OK'
