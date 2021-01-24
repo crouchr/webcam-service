@@ -53,22 +53,24 @@ def take_picture(image_filename):
 
     return True
 
-
+# Twitter uses MP4 plus H.264 codec
 def take_video(video_filename, video_length_secs):
     print('Grabbing ' + video_length_secs.__str__() + ' seconds of video from webcam...')
     cam = cv2.VideoCapture(0)       # /dev/video0
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')        # .avi
-    #fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+
 
     # 20 or 30 fps
-    out = cv2.VideoWriter(video_filename, fourcc, 30.0, (640, 480))
+    out = cv2.VideoWriter(video_filename, fourcc, 20.0, (1280, 720))
+    #out = cv2.VideoWriter(video_filename, fourcc, 30.0, (640, 480))
+    #out = cv2.VideoWriter(video_filename, fourcc, 20.0, (800, 480))
     #out = cv2.VideoWriter(video_filename, fourcc, 30.0, (1920, 1080))
     #out = cv2.VideoWriter(video_filename, fourcc, 30.0, (800, 600))
 
     frames_captured = 0
     frames_to_capture = video_length_secs * 30   # 20 fps
 
-    while(cam.isOpened() and frames_captured < frames_to_capture):
+    while cam.isOpened() and frames_captured < frames_to_capture :
         ret, frame = cam.read()
         if ret:
             out.write(frame)
@@ -88,10 +90,10 @@ def take_video(video_filename, video_length_secs):
 
 if __name__ == '__main__' :
     # media_filename = create_media_filename('image')
-    media_filename = 'junk.png'
-    flag = take_picture(media_filename)
+    # media_filename = 'junk.png'
+    # flag = take_picture(media_filename)
 
     # media_filename = create_media_filename('video')
     #
-    # media_filename = 'sky.avi'
-    # flag = take_video(media_filename, video_length_secs=15)
+    media_filename = 'sky.mp4'
+    flag = take_video(media_filename, video_length_secs=10)
