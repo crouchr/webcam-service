@@ -9,6 +9,7 @@ flask = "==1.1.2"
 requests = "==2.25.1"
 opencv-python-headless = "*"
 imageio = "==2.9.0"
+importlib-metadata = "==3.4.0"
 
 [dev-packages]
 

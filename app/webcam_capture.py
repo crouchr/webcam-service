@@ -11,9 +11,15 @@
 # https://linuxconfig.org/how-to-install-mpeg-4-aac-decoder-for-centos-7-linux
 # use smplayer for viewing
 
-import cv2
 
 import time
+import os
+import traceback
+
+import cv2
+
+import video_compress_funcs
+import definitions
 
 
 def create_media_filename(media_type):
@@ -21,7 +27,7 @@ def create_media_filename(media_type):
     Generate a filename from the current time
     :return:
     """
-    filename = "metminiwx_sky_image_" + time.ctime()
+    filename = "metminiwx_" + time.ctime()
     filename = filename.replace('  ', ' ')
     filename = filename.replace(' ', '_')
     filename = filename.replace(':', '_')
@@ -30,13 +36,19 @@ def create_media_filename(media_type):
         filename = filename + '.png'
     elif media_type == 'video':
         filename = filename + '.avi'
-        #filename = filename + '.mp4'
 
-    return filename
+    full_pathname = definitions.MEDIA_ROOT + filename
+    full_pathname = full_pathname.lower()
+
+    return full_pathname
 
 
+# can't get it to do anything except 640 x 480, 8-bit colour at the moment
 def take_picture(image_filename):
-    cam = cv2.VideoCapture(0)       # /dev/video0
+    """
+    Capture a png image
+    """
+    cam = cv2.VideoCapture(0)        # /dev/video0
 
     print('Grabbing still image from webcam...')
     ret, frame = cam.read()
@@ -53,47 +65,55 @@ def take_picture(image_filename):
 
     return True
 
-# Twitter uses MP4 plus H.264 codec
-def take_video(video_filename, video_length_secs):
-    print('Grabbing ' + video_length_secs.__str__() + ' seconds of video from webcam...')
-    cam = cv2.VideoCapture(0)       # /dev/video0
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+
+def take_video(video_length_secs, crf=19):
+    """
+
+    """
+    try:
+        print('Grabbing ' + video_length_secs.__str__() + ' seconds of video from webcam...')
+        video_filename = create_media_filename('video')     # name of the intermediate avi file
+
+        cam = cv2.VideoCapture(0)       # /dev/video0
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')        # .avi
+
+        out = cv2.VideoWriter(video_filename, fourcc, 30.0, (640, 480))
+
+        frames_captured = 0
+        frames_to_capture = video_length_secs * 30   # 20 fps
+
+        while cam.isOpened() and frames_captured < frames_to_capture:
+            ret, frame = cam.read()
+            if ret:
+                out.write(frame)
+                frames_captured += 1
+            else:
+                print('Failed to grab video')
+                break
+
+        print("Video {} written to disk".format(video_filename))
+
+        cam.release()
+        time.sleep(1)
+
+        # convert avi to mp4/h264
+        mp4_filename = video_compress_funcs.encode_to_mp4(video_filename, crf=crf)
+
+        # remove the avi file
+        os.remove(video_filename)
+
+        return True, mp4_filename
+
+    except Exception as e:
+        traceback.print_exc()
+        return False, None
 
 
-    # 20 or 30 fps
-    out = cv2.VideoWriter(video_filename, fourcc, 20.0, (1280, 720))
-    #out = cv2.VideoWriter(video_filename, fourcc, 30.0, (640, 480))
-    #out = cv2.VideoWriter(video_filename, fourcc, 20.0, (800, 480))
-    #out = cv2.VideoWriter(video_filename, fourcc, 30.0, (1920, 1080))
-    #out = cv2.VideoWriter(video_filename, fourcc, 30.0, (800, 600))
+if __name__ == '__main__':
+    #print(cv2.__version__)
+    #print(cv2.getBuildInformation())
 
-    frames_captured = 0
-    frames_to_capture = video_length_secs * 30   # 20 fps
-
-    while cam.isOpened() and frames_captured < frames_to_capture :
-        ret, frame = cam.read()
-        if ret:
-            out.write(frame)
-            frames_captured += 1
-        else:
-            print('Failed to grab video')
-            break
-
-    print("Video {} written to disk".format(video_filename))
-
-    cam.release()
-
-    time.sleep(1)
-
-    return True
-
-
-if __name__ == '__main__' :
     # media_filename = create_media_filename('image')
-    # media_filename = 'junk.png'
-    # flag = take_picture(media_filename)
+    # flag = take_picture('test_image.png')
 
-    # media_filename = create_media_filename('video')
-    #
-    media_filename = 'sky.mp4'
-    flag = take_video(media_filename, video_length_secs=10)
+    flag, mp4_filename = take_video(crf=10, video_length_secs=5)
