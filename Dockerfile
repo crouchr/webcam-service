@@ -9,7 +9,7 @@ ENV PYTHONUNBUFFERED=1
 
 # install opencv
 RUN apt -y update
-RUN apt -y upgrade
+#RUN apt -y upgrade
 RUN apt -y install python3-opencv joe
 
 # Install Python dependencies
