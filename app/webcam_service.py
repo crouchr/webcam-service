@@ -32,7 +32,7 @@ def status():
     this_uuid = request.args.get('uuid')
 
     answer['status'] = 'OK'
-    answer['uuid'] = this_uuid
+    answer['uuid'] = this_uuid.__str__()
     answer['service_name'] = 'webcam-service'
     answer['version'] = get_env.get_version()
 
