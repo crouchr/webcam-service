@@ -21,6 +21,7 @@ RUN pipenv install --system --deploy
 RUN mkdir /app
 COPY app/*.py /app/
 WORKDIR /app
+#RUN echo date > /tmp/built.txt
 
 # run Python unbuffered so the logs are flushed
 CMD ["python3", "-u", "webcam_service.py"]
