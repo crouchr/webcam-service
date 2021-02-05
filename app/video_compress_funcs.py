@@ -3,7 +3,7 @@ import os
 # import mytwython
 import webcam_capture
 
-
+# less verbose output ffmpeg -hide_banner -loglevel panic
 # https://superuser.com/questions/525249/convert-avi-xvid-to-mp4-h-264-keeping-the-same-quality
 # ffmpeg -i input.avi -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac -b:a 192k -ac 2 out.mp4
 # -an : disable audio
@@ -19,7 +19,7 @@ def encode_to_mp4(input_avi_filename, crf=19):
     output_mp4_filename = input_avi_filename.split('.')[0] + '.mp4'
     print('encoding ' + input_avi_filename + ' video to MP4/H264, crf=' + crf.__str__())
     # cmd_str = 'ffmpeg -i ' + input_avi_filename + ' -an -y -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac -b:a 192k -ac 2 ' + output_mp4_filename
-    cmd_str = 'ffmpeg -i ' + input_avi_filename + ' -an -y -c:v libx264 -crf ' + crf.__str__() + ' -preset slow -c:a libfdk_aac -b:a 192k -ac 2 ' + output_mp4_filename
+    cmd_str = 'ffmpeg -hide_banner -loglevel panic -i ' + input_avi_filename + ' -an -y -c:v libx264 -crf ' + crf.__str__() + ' -preset slow -c:a libfdk_aac -b:a 192k -ac 2 ' + output_mp4_filename
     print(cmd_str)
     os.system(cmd_str)
 
