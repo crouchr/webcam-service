@@ -10,7 +10,7 @@ ENV PYTHONUNBUFFERED=1
 # install opencv
 RUN apt -y update
 #RUN apt -y upgrade
-RUN apt -y install python3-opencv joe
+RUN apt -y install python3-opencv joe x264 ffmpeg
 
 # Install Python dependencies
 RUN pip3 install pipenv
