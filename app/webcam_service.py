@@ -93,22 +93,26 @@ def get_video_api():
     try:
         answer = {}
         app_name = request.args.get('app_name')
-        this_uuid = request.args.get('uuid')
+        this_uuid = request.args.get('uuid').__str__()
+        preamble_secs = int(request.args.get('preamble_secs'))
         video_length_secs = int(request.args.get('video_length_secs'))
 
         print('get_video_api() : app_name=' + app_name.__str__() + ', uuid=' + this_uuid.__str__())
 
-        result, mp4_filename = webcam_capture.take_video(video_length_secs=video_length_secs)
+        result, mp4_filename = webcam_capture.take_video(video_length_secs=video_length_secs, preamble_secs=preamble_secs, uuid=this_uuid)
 
         # Create response
-        answer['status'] = 'OK'
         answer['uuid'] = this_uuid
-        answer['output_filename'] = mp4_filename
-        answer['filesize'] = os.stat(mp4_filename).st_size          # Bytes
-
-        response = jsonify(answer)
-
-        return response
+        if not result:
+            answer['status'] = 'Error : Failed to create mp4 file, uuid=' + this_uuid
+            response = jsonify(answer, 500)                             # application error
+            return response
+        else:
+            answer['status'] = 'OK'
+            answer['output_filename'] = mp4_filename.__str__()          # might be None
+            answer['filesize'] = os.stat(mp4_filename).st_size          # Bytes
+            response = jsonify(answer)
+            return response
 
     except Exception as e:
         answer['function'] = 'get_video_api()'

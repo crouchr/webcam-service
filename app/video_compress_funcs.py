@@ -9,7 +9,7 @@ import webcam_capture
 # -an : disable audio
 # -y : allow overwrite outputfile
 # crf controls quality lower crf = better quality crf=19 is a good starting point
-def encode_to_mp4(input_avi_filename, crf=19):
+def encode_to_mp4(input_avi_filename, crf=19, uuid=None):
     """
     Encode to MP4 H.264 which is Twitter's video format
     :param input_avi_filename:
@@ -17,21 +17,29 @@ def encode_to_mp4(input_avi_filename, crf=19):
     """
 
     output_mp4_filename = input_avi_filename.split('.')[0] + '.mp4'
-    print('encoding ' + input_avi_filename + ' video to MP4/H264, crf=' + crf.__str__())
+    print('encode_to_mp4() : encoding ' + input_avi_filename + ' video to MP4/H264, crf=' + crf.__str__() + ', uuid=' + uuid.__str__())
     # cmd_str = 'ffmpeg -i ' + input_avi_filename + ' -an -y -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac -b:a 192k -ac 2 ' + output_mp4_filename
-    cmd_str = 'ffmpeg -hide_banner -loglevel panic -i ' + input_avi_filename + ' -an -y -c:v libx264 -crf ' + crf.__str__() + ' -preset slow -c:a libfdk_aac -b:a 192k -ac 2 ' + output_mp4_filename
+    cmd_str = 'ffmpeg -i ' + input_avi_filename + ' -loglevel quiet -stats -an -y -c:v libx264 -crf ' + crf.__str__() + ' -preset slow -c:a libfdk_aac -b:a 192k -ac 2 ' + output_mp4_filename
     print(cmd_str)
-    os.system(cmd_str)
+    result = os.system(cmd_str)     # can't tell if it ran OK
 
-    file_stats = os.stat(input_avi_filename)
-    input_file_size = file_stats.st_size / (1024 * 1024)
-    print(input_avi_filename + ', AVI size (MB) : ' + input_file_size.__str__())
+    if not os.path.exists(input_avi_filename):
+        print('Error : input file ' + input_avi_filename + ' does not exist, uuid=' + uuid.__str__())
+    else:
+        file_stats = os.stat(input_avi_filename)
+        input_file_size = round(file_stats.st_size / (1024 * 1024), 2)
+        print('input video file : ' + input_avi_filename + ', AVI size (MB) : ' + input_file_size.__str__())
 
-    file_stats = os.stat(output_mp4_filename)
-    output_file_size = file_stats.st_size / (1024 * 1024)
-    print(output_mp4_filename + ', MP4 size (MB) : ' + output_file_size.__str__())
+    if not os.path.exists(output_mp4_filename):
+        print('Error : output file ' + output_mp4_filename + ' does not exist, uuid=' + uuid.__str__())
+        result = False
+    else:
+        file_stats = os.stat(output_mp4_filename)
+        output_file_size = round(file_stats.st_size / (1024 * 1024), 2)
+        print('output video file created OK : ' + output_mp4_filename + ', MP4 size (MB) : ' + output_file_size.__str__() + ', uuid=' + uuid.__str__())
+        result = True
 
-    return output_mp4_filename
+    return result, output_mp4_filename
 
 
 # test harness

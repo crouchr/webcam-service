@@ -1,11 +1,8 @@
 # POC
 # take a picture of the sky so that the picture can be:
-# a) send in Forecast Tweet
+# a) sent in Forecast Tweet
 # b) analysed to determine approximate light level
 # c) analysed for cloud coverage
-
-# ideas
-# grab a 5 second video and send in tweet as an animated gif ?
 
 # https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_gui/py_video_display/py_video_display.html
 # https://linuxconfig.org/how-to-install-mpeg-4-aac-decoder-for-centos-7-linux
@@ -66,43 +63,55 @@ def take_picture(image_filename):
     return True
 
 
-def take_video(video_length_secs, crf=19):
+def take_video(video_length_secs, preamble_secs=0, crf=19, uuid=None):
     """
-
+    Grab a video from webcam
     """
     try:
-        print('Grabbing ' + video_length_secs.__str__() + ' seconds of video from webcam...')
+        fps = 30.0     # frames per second
+        width = 640
+        height = 480
+
+        print('Grabbing ' + video_length_secs.__str__() + ' seconds of video from webcam, fps=' + fps.__str__() + ', uuid=' + uuid.__str__())
         video_filename = create_media_filename('video')     # name of the intermediate avi file
 
-        cam = cv2.VideoCapture(0)       # /dev/video0
+        cam = cv2.VideoCapture(0)                       # /dev/video0
         fourcc = cv2.VideoWriter_fourcc(*'XVID')        # .avi
 
-        out = cv2.VideoWriter(video_filename, fourcc, 30.0, (640, 480))
+        out = cv2.VideoWriter(video_filename, fourcc, fps, (width, height))
 
         frames_captured = 0
-        frames_to_capture = video_length_secs * 30   # 20 fps
+        frames_to_capture = (preamble_secs + video_length_secs) * int(fps)
+        frames_to_discard = preamble_secs * int(fps)     # cheap webcams are overexposed for first few seconds
+        print('frames_to_capture=' + frames_to_capture.__str__())
+        print('frames_to_discard=' + frames_to_discard.__str__())
 
         while cam.isOpened() and frames_captured < frames_to_capture:
             ret, frame = cam.read()
             if ret:
-                out.write(frame)
+                if frames_captured > frames_to_discard:     # preamble period is over so not capture frames
+                    out.write(frame)
                 frames_captured += 1
             else:
-                print('Failed to grab video')
+                print('Error : Failed to grab video, uuid=' + uuid.__str__())
                 break
 
-        print("Video {} written to disk".format(video_filename))
+        print('Video ' + video_filename + ' successfully written to disk, fps=' + fps.__str__() + ', uuid=' + uuid.__str__())
 
         cam.release()
         time.sleep(1)
 
         # convert avi to mp4/h264
-        mp4_filename = video_compress_funcs.encode_to_mp4(video_filename, crf=crf)
+        result, mp4_filename = video_compress_funcs.encode_to_mp4(video_filename, crf=crf, uuid=uuid)
 
-        # remove the avi file
+        # remove the input avi file
         os.remove(video_filename)
+        print('Deleted intermediate file ' + video_filename + ', uuid=' + uuid.__str__())
 
-        return True, mp4_filename
+        if not result:  # failed
+            return False, None
+        else:           # video created OK
+            return True, mp4_filename
 
     except Exception as e:
         traceback.print_exc()

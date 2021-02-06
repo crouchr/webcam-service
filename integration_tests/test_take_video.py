@@ -13,8 +13,8 @@ def test_take_video():
 
     query['app_name'] = 'integration_tests'
     query['uuid'] = this_uuid.__str__()
-
-    query['video_length_secs'] = 2
+    query['video_length_secs'] = 5      # excludes preamble_secs
+    query['preamble_secs'] = 2          # ignore first few secs as video is often overexposed in bright conditions
 
     status_code, response_dict = call_rest_api.call_rest_api(integration_definitions.webcam_service_endpoint_base + '/get_video', query)
 
