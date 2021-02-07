@@ -24,4 +24,9 @@ def test_take_video():
     assert status_code == 200
     assert response_dict['status'] == 'OK'
     assert response_dict['uuid'] == this_uuid.__str__()
-    assert int(response_dict['filesize']) > 0
+
+    assert int(response_dict['video_filesize']) > 10
+    assert int(response_dict['jpeg_filesize']) > 10
+
+    assert '/metminiwx/media' in response_dict['video_filename']
+    assert '/metminiwx/media' in response_dict['jpeg_filename']
