@@ -4,6 +4,7 @@
 
 import time
 import uuid
+from pprint import pprint
 
 import call_rest_api
 import integration_definitions
@@ -44,11 +45,13 @@ def send_tweet(tweet_text, filename, uuid):
 
     twitter_service_endpoint_base = 'http://192.168.1.5:9506'
     status_code, response_dict = call_rest_api.call_rest_api(twitter_service_endpoint_base + '/send_video', query)
+    print('status_code=' + status_code.__str__())
+    pprint(response_dict)
 
 
 def main():
 
-    min_lux = 100                           # was 100
+    min_lux = 30                            # was 100
     crf = 19                                # H264 encoding quality parameter
     my_app_name = 'take_sky_webcamd'
 
@@ -85,8 +88,7 @@ def main():
         filename = mp4_filename.split('/')[-1]      # ignore the filepath
 
         # Tweet the video
-        tweet_text = 'take_sky_webcamd :' +\
-            ' ' + cumulus_weather_info['Beaufort'] + ' max=' + cumulus_weather_info['HighBeaufortToday'] + \
+        tweet_text = cumulus_weather_info['Beaufort'] + ' (max=' + cumulus_weather_info['HighBeaufortToday'] + ')' + \
             ', cbase=' + cumulus_weather_info['Cloudbase'].__str__() + ' ' + cumulus_weather_info['CloudbaseUnit'] + \
             ', ' + cumulus_weather_info['Pressure'].__str__() + ' ' + cumulus_weather_info['PressUnit'] + \
             ', trend=' + cumulus_weather_info['PressTrend'].__str__() + \
