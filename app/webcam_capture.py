@@ -12,11 +12,36 @@
 import time
 import os
 import traceback
+import datetime
 
 import cv2
 
 import video_compress_funcs
 import definitions
+
+# brightness_4
+# # Python script to create an empty file
+# # with current date as name.
+#
+# # importing datetime module
+# import datetime
+#
+# # datetime.datetime.now() to get
+# # current date as filename.
+# filename = datetime.datetime.now()
+#
+#
+# # create empty file
+# def create_file():
+#     # Function creates an empty file
+#     # %d - date, %B - month, %Y - Year
+#     with open(filename.strftime("%d %B %Y") + ".txt", "w") as file:
+#         file.write("")
+#
+#     # Driver Code
+#
+#
+# create_file()
 
 
 def create_media_filename(media_type):
@@ -24,13 +49,11 @@ def create_media_filename(media_type):
     Generate a filename from the current time
     :return:
     """
-    filename = "metminiwx_" + time.ctime()
-    filename = filename.replace('  ', ' ')
-    filename = filename.replace(' ', '_')
-    filename = filename.replace(':', '_')
+    filename_obj = datetime.datetime.now()
+    filename = filename_obj.strftime("metminiwx-%Y-%m-%d-%H-%M-%S")
 
     if media_type == 'image':
-        filename = filename + '.png'
+        filename = filename + '.jpg'    # was .png ??
     elif media_type == 'video':
         filename = filename + '.avi'
 
@@ -122,7 +145,8 @@ if __name__ == '__main__':
     #print(cv2.__version__)
     #print(cv2.getBuildInformation())
 
-    # media_filename = create_media_filename('image')
+    jpeg_filename = create_media_filename('image')
+    mp4_filename = create_media_filename('video')
     # flag = take_picture('test_image.png')
 
     flag, mp4_filename = take_video(crf=10, video_length_secs=5)

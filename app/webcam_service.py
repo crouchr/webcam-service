@@ -1,13 +1,12 @@
 # microservice
 import os
-import time
-import sys
 
 from flask import Flask, jsonify, request
 
 import get_env
 import definitions
 import webcam_capture
+import grab_still_from_video
 
 app = Flask(__name__)
 
@@ -101,6 +100,11 @@ def get_video_api():
 
         result, mp4_filename = webcam_capture.take_video(video_length_secs=video_length_secs, preamble_secs=preamble_secs, uuid=this_uuid)
 
+        if result:
+            jpeg_filename = grab_still_from_video.grab_still_from_video(mp4_filename)
+            print('video captured from webcam : ' + mp4_filename + ', uuid=' + this_uuid.__str__())
+            print('image grabbed from video : ' + jpeg_filename + ', uuid=' + this_uuid.__str__())
+
         # Create response
         answer['uuid'] = this_uuid
         if not result:
@@ -109,8 +113,11 @@ def get_video_api():
             return response
         else:
             answer['status'] = 'OK'
-            answer['output_filename'] = mp4_filename.__str__()          # might be None
-            answer['filesize'] = os.stat(mp4_filename).st_size          # Bytes
+            answer['video_filename'] = mp4_filename.__str__()               # might be None
+            answer['video_filesize'] = os.stat(mp4_filename).st_size        # Bytes
+            answer['jpeg_filename'] = jpeg_filename.__str__()               # might be None
+            answer['jpeg_filesize'] = os.stat(jpeg_filename).st_size
+
             response = jsonify(answer)
             return response
 
