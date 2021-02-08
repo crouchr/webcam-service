@@ -98,7 +98,7 @@ def get_video_api():
 
         print('get_video_api() : app_name=' + app_name.__str__() + ', uuid=' + this_uuid.__str__())
 
-        result, mp4_filename = webcam_capture.take_video(video_length_secs=video_length_secs, preamble_secs=preamble_secs, uuid=this_uuid)
+        result, mp4_filename = webcam_capture.take_video(video_length_secs=video_length_secs, preamble_secs=preamble_secs, uuid=this_uuid.__str__())
 
         if result:
             jpeg_filename = grab_still_from_video.grab_still_from_video(mp4_filename)
