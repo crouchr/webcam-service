@@ -92,7 +92,7 @@ def get_video_api():
     try:
         answer = {}
         app_name = request.args.get('app_name')
-        this_uuid = request.args.get('uuid').__str__()
+        this_uuid = str(request.args.get('uuid'))
         preamble_secs = int(request.args.get('preamble_secs'))
         video_length_secs = int(request.args.get('video_length_secs'))
 
