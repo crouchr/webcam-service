@@ -98,8 +98,8 @@ def take_video(video_length_secs, preamble_secs=0, crf=19, uuid=None):
         print('Grabbing ' + video_length_secs.__str__() + ' seconds of video from webcam, fps=' + fps.__str__() + ', uuid=' + uuid.__str__())
         video_filename = create_media_filename('video')     # name of the intermediate avi file
 
-        cam = cv2.VideoCapture(0)                       # /dev/video0
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')        # .avi
+        cam = cv2.VideoCapture(0)                           # /dev/video0
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')            # .avi
 
         out = cv2.VideoWriter(video_filename, fourcc, fps, (width, height))
 

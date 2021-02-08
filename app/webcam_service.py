@@ -91,14 +91,19 @@ def get_video_api():
     """
     try:
         answer = {}
+        crf = 19
+
         app_name = request.args.get('app_name')
         this_uuid = str(request.args.get('uuid'))
         preamble_secs = int(request.args.get('preamble_secs'))
         video_length_secs = int(request.args.get('video_length_secs'))
 
-        print('get_video_api() : app_name=' + app_name.__str__() + ', uuid=' + this_uuid.__str__())
+        print('get_video_api() : app_name=' + app_name.__str__())
+        print('get_video_api() : preamble_secs=' + preamble_secs.__str__())
+        print('get_video_api() : video_length_secs=' + video_length_secs.__str__())
+        print('get_video_api() : uuid=' + this_uuid.__str__())
 
-        result, mp4_filename = webcam_capture.take_video(video_length_secs=video_length_secs, preamble_secs=preamble_secs, uuid=this_uuid.__str__())
+        result, mp4_filename = webcam_capture.take_video(video_length_secs=video_length_secs, preamble_secs=preamble_secs, crf=crf, uuid=this_uuid.__str__())
 
         if result:
             jpeg_filename = grab_still_from_video.grab_still_from_video(mp4_filename)
