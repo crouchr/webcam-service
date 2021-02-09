@@ -111,9 +111,9 @@ def get_video_api():
             print('image grabbed from video : ' + jpeg_filename + ', uuid=' + this_uuid.__str__())
 
         # Create response
-        answer['uuid'] = this_uuid
+        answer['uuid'] = this_uuid.__str__()
         if not result:
-            answer['status'] = 'Error : Failed to create mp4 file, uuid=' + this_uuid
+            answer['status'] = 'Error : Failed to create mp4 file, uuid=' + this_uuid.__str__()
             response = jsonify(answer, 500)                             # application error
             return response
         else:
@@ -129,7 +129,7 @@ def get_video_api():
     except Exception as e:
         answer['function'] = 'get_video_api()'
         answer['error'] = str(e)
-        print('get_video_api() : app_name=' + app_name.__str__() + ', error : ' + e.__str__())
+        print('Exception : get_video_api() : app_name=' + app_name.__str__() + ', error=' + e.__str__())
         response = jsonify(answer, 500)
 
         return response
